@@ -6,7 +6,7 @@ module.exports = {
         node: true,
         browser: true,
         es2021: true,
-        mocha: true,
+        jest: true,
     },
     parser: "@typescript-eslint/parser",
     parserOptions: {
@@ -20,19 +20,4 @@ module.exports = {
         "plugin:eslint-plugin/recommended",
         // "plugin:node/recommended",
     ],
-    // overrides: [
-    //     {
-    //         files: ["*.ts"],
-    //         env: { mocha: true, node: true },
-    //         extends: ["plugin:@typescript-eslint/recommended"],
-    //         parser: "@typescript-eslint/parser",
-    //         parserOptions: {
-    //             tsconfigRootDir: __dirname,
-    //             project: ["./tsconfig.json"],
-    //             include: ["src/**/*.ts"],
-    //             ecmaVersion: "latest",
-    //             sourceType: "module",
-    //         },
-    //     },
-    // ],
 };

@@ -5,6 +5,8 @@
 "use strict";
 import { TSESTree, AST_NODE_TYPES } from "@typescript-eslint/utils";
 import { createRule } from "../utils/createRule";
+import { error } from "console";
+
 
 type InputNameRuleConfig = {
     caseSensitiveInputType?: boolean;
@@ -93,29 +95,29 @@ const rule = createRule<[InputNameRuleConfig], MessageIds>({
                     decorator.expression.callee.name === "Arg"
             );
         }
-        console.debug("test1");
+        // eslint-disable-next-line no-debugger
         return {
             MethodDefinition(node: TSESTree.MethodDefinition) {
-                console.debug("test1");
-
+                error("test1");
+                // eslint-disable-next-line no-debugger
                 if ((options.checkMutations && !isMutation(node)) || (options.checkQueries && !isQuery(node))) return null;
-                console.debug("test1");
+                error("test1");
 
                 if (node.key.type !== AST_NODE_TYPES.Identifier) return;
-                console.debug("test1");
+                error("test1");
 
                 const methodName = node.key.name;
                 const requiredParameterTypeName = methodName + "Input";
                 // now I know that this method has a mutation/query decorator.
                 // now find the parameter that has a decorator with a name Arg.
-                console.debug("test1");
+                error("test1");
                 if (node.value.type !== AST_NODE_TYPES.FunctionExpression) return;
                 for (const parameter of node.value.params) {
                     if (!parameter.decorators || parameter.decorators.length === 0) continue;
                     //I know it has decorators, but does it have Arg and which one is Arg?
                     const ArgDecorator = findArgDecorator(parameter);
                     if (!ArgDecorator) continue;
-                    console.debug("test2");
+                    error("test2");
 
                     if (
                         parameter.type !== AST_NODE_TYPES.Identifier ||
@@ -125,13 +127,13 @@ const rule = createRule<[InputNameRuleConfig], MessageIds>({
                         parameter.typeAnnotation.typeAnnotation.typeName.type !== AST_NODE_TYPES.Identifier
                     )
                         return;
-                    console.debug("test3");
+                    error("test3");
 
                     const parameterTypeNameLiteral = parameter.typeAnnotation.typeAnnotation.typeName;
                     const parameterTypeName = parameter.typeAnnotation.typeAnnotation.typeName.name;
 
                     if (parameterTypeName === requiredParameterTypeName) return;
-                    console.debug("test4");
+                    error("test4");
 
                     return context.report({
                         node: parameterTypeNameLiteral,

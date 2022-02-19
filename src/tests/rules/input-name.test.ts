@@ -23,6 +23,7 @@ ruleTester.run("input-name", rule, {
     valid: [
         // give me some code that won't trigger a warning
         {
+            name: "Test",
             code: `
       export class ConsultResolver {
           @Mutation(() => Boolean)

@@ -18,11 +18,13 @@ const ruleTester = new RuleTester({
         tsconfigRootDir: __dirname,
     },
 });
+
 // eslint-disable-next-line no-debugger
 ruleTester.run("input-type-name", rule, {
     valid: [
         // give me some code that won't trigger a warning
         {
+            name: "validTypeName",
             code: `
       export class ConsultResolver {
           @Mutation(() => Boolean)
@@ -36,6 +38,7 @@ ruleTester.run("input-type-name", rule, {
 
     invalid: [
         {
+            name: "invalidTypeName1",
             code: `
       export class ConsultResolver {
         @Mutation(() => Boolean)
@@ -47,6 +50,7 @@ ruleTester.run("input-type-name", rule, {
             errors: [{ messageId: "errorStringGeneric" }],
         },
         {
+            name: "invalidTypeName2",
             code: `
             export class ConsultResolver {
             @Mutation(() => Boolean)
