@@ -1,6 +1,6 @@
-# Enforce descriptions in type definitions and operations. (require-description)
+# Require-Description
 
-Please describe the origin of the rule here.
+Enforce descriptions in type definitions and operations. (require-description)Please describe the origin of the rule here
 
 ## Rule Details
 
@@ -9,17 +9,13 @@ This rule aims to...
 Examples of **incorrect** code for this rule:
 
 ```js
-
 // fill me in
-
 ```
 
 Examples of **correct** code for this rule:
 
 ```js
-
 // fill me in
-
 ```
 
 ### Options

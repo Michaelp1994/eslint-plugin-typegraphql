@@ -18,6 +18,8 @@ npm install eslint-plugin-typegraphql --save-dev
 
 ## Usage
 
+This is based on the rules of [graphql-esllint](https://github.com/B2o5T/graphql-eslint) but for TypegraphQL where they can be applied.
+
 Add `graphql` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
 
 ```json

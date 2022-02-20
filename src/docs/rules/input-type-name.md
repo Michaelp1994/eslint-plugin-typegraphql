@@ -1,4 +1,4 @@
-# Input-Name
+# Input-Type-Name
 
 Require mutation argument to be always called &#34;input&#34; and input type to be called Mutation name + &#34;Input&#34;. Using the same name for all input parameters will make your schemas easier to consume and more predictable. Using the same name as mutation for InputType will make it easier to find mutations that InputType belongs to. (input-name)Please describe the origin of the rule here
 
