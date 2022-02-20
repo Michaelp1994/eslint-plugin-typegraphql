@@ -5,9 +5,6 @@
 "use strict";
 import { TSESTree, AST_NODE_TYPES } from "@typescript-eslint/utils";
 import { createRule } from "../utils/createRule";
-import { error } from "console";
-
-
 type InputNameRuleConfig = {
     caseSensitiveInputType?: boolean;
     checkQueries?: boolean;
@@ -19,7 +16,7 @@ type MessageIds = "errorStringGeneric" | "fixParameterType";
 // Rule Definition
 //------------------------------------------------------------------------------
 const rule = createRule<[InputNameRuleConfig], MessageIds>({
-    name: "input-name",
+    name: "input-type-name",
     defaultOptions: [
         {
             caseSensitiveInputType: true,
@@ -36,7 +33,7 @@ const rule = createRule<[InputNameRuleConfig], MessageIds>({
             recommended: false,
         },
         messages: {
-            errorStringGeneric: `Input "{{name}}" should be called "input"`,
+            errorStringGeneric: `Input "{{name}}" should be called "{{suggestedName}}"`,
             fixParameterType: `Change "{{name}}" to "{{suggestedName}}"`,
         },
         //fixable: null, // Or `code` or `whitespace`
@@ -95,63 +92,81 @@ const rule = createRule<[InputNameRuleConfig], MessageIds>({
                     decorator.expression.callee.name === "Arg"
             );
         }
-        // eslint-disable-next-line no-debugger
+        function findNameInMutationDecorator(node: TSESTree.MethodDefinition) {
+            const decorator = node.decorators?.find(
+                (decorator) =>
+                    decorator.expression.type === AST_NODE_TYPES.CallExpression &&
+                    decorator.expression.callee.type === AST_NODE_TYPES.Identifier &&
+                    (decorator.expression.callee.name === "Mutation" || decorator.expression.callee.name === "Query")
+            );
+            if (
+                !decorator ||
+                decorator.expression.type !== AST_NODE_TYPES.CallExpression ||
+                decorator.expression.arguments.length < 2 ||
+                decorator.expression.arguments[1].type !== AST_NODE_TYPES.ObjectExpression
+            )
+                return null;
+            const optionsObject = decorator.expression.arguments[1];
+            const nameProperty = optionsObject.properties.find(
+                (property) => property.type === AST_NODE_TYPES.Property && property.key.type === AST_NODE_TYPES.Identifier && property.key.name === "name"
+            );
+            if (!nameProperty || nameProperty.type !== AST_NODE_TYPES.Property) return null;
+            if (nameProperty.value.type === AST_NODE_TYPES.Literal) return nameProperty.value.value;
+            if (nameProperty.value.type === AST_NODE_TYPES.Identifier) {
+                //TODO: maybe find the value of the variable? using Scope Manager. For now do nothing.
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const scope = context.getScope();
+                return null;
+            }
+            return;
+        }
         return {
-            MethodDefinition(node: TSESTree.MethodDefinition) {
-                error("test1");
-                // eslint-disable-next-line no-debugger
-                if ((options.checkMutations && !isMutation(node)) || (options.checkQueries && !isQuery(node))) return null;
-                error("test1");
+            async MethodDefinition(node) {
+                if ((options.checkMutations && isMutation(node)) || (options.checkQueries && isQuery(node))) {
+                    if (node.key.type !== AST_NODE_TYPES.Identifier) return;
+                    const name = findNameInMutationDecorator(node);
+                    const methodName = name ? name : node.key.name;
+                    const requiredParameterTypeName = methodName + "Input";
+                    // now I know that this method has a mutation/query decorator.
+                    // now find the parameter that has a decorator with a name Arg.
+                    if (node.value.type !== AST_NODE_TYPES.FunctionExpression) return;
+                    for (const parameter of node.value.params) {
+                        if (!parameter.decorators || parameter.decorators.length === 0) continue;
+                        //I know it has decorators, but does it have Arg and which one is Arg?
+                        const ArgDecorator = findArgDecorator(parameter);
+                        if (!ArgDecorator) continue;
+                        if (
+                            parameter.type !== AST_NODE_TYPES.Identifier ||
+                            !parameter.typeAnnotation ||
+                            parameter.typeAnnotation.type !== AST_NODE_TYPES.TSTypeAnnotation ||
+                            parameter.typeAnnotation.typeAnnotation.type !== AST_NODE_TYPES.TSTypeReference ||
+                            parameter.typeAnnotation.typeAnnotation.typeName.type !== AST_NODE_TYPES.Identifier
+                        )
+                            return;
 
-                if (node.key.type !== AST_NODE_TYPES.Identifier) return;
-                error("test1");
-
-                const methodName = node.key.name;
-                const requiredParameterTypeName = methodName + "Input";
-                // now I know that this method has a mutation/query decorator.
-                // now find the parameter that has a decorator with a name Arg.
-                error("test1");
-                if (node.value.type !== AST_NODE_TYPES.FunctionExpression) return;
-                for (const parameter of node.value.params) {
-                    if (!parameter.decorators || parameter.decorators.length === 0) continue;
-                    //I know it has decorators, but does it have Arg and which one is Arg?
-                    const ArgDecorator = findArgDecorator(parameter);
-                    if (!ArgDecorator) continue;
-                    error("test2");
-
-                    if (
-                        parameter.type !== AST_NODE_TYPES.Identifier ||
-                        !parameter.typeAnnotation ||
-                        parameter.typeAnnotation.type !== AST_NODE_TYPES.TSTypeAnnotation ||
-                        parameter.typeAnnotation.typeAnnotation.type !== AST_NODE_TYPES.TSTypeReference ||
-                        parameter.typeAnnotation.typeAnnotation.typeName.type !== AST_NODE_TYPES.Identifier
-                    )
-                        return;
-                    error("test3");
-
-                    const parameterTypeNameLiteral = parameter.typeAnnotation.typeAnnotation.typeName;
-                    const parameterTypeName = parameter.typeAnnotation.typeAnnotation.typeName.name;
-
-                    if (parameterTypeName === requiredParameterTypeName) return;
-                    error("test4");
-
-                    return context.report({
-                        node: parameterTypeNameLiteral,
-                        messageId: "errorStringGeneric",
-                        suggest: [
-                            {
-                                messageId: "fixParameterType",
-                                data: {
-                                    name: parameterTypeName,
-                                    suggestedName: requiredParameterTypeName,
+                        const parameterTypeNameLiteral = parameter.typeAnnotation.typeAnnotation.typeName;
+                        const parameterTypeName = parameter.typeAnnotation.typeAnnotation.typeName.name;
+                        if (options.caseSensitiveInputType && parameterTypeName === requiredParameterTypeName) return;
+                        if (!options.caseSensitiveInputType && parameterTypeName.toLowerCase() === requiredParameterTypeName.toLowerCase()) return;
+                        return context.report({
+                            node: parameterTypeNameLiteral,
+                            messageId: "errorStringGeneric",
+                            suggest: [
+                                {
+                                    messageId: "fixParameterType",
+                                    data: {
+                                        name: parameterTypeName,
+                                        suggestedName: requiredParameterTypeName,
+                                    },
+                                    fix: (fixer) => fixer.replaceText(parameterTypeNameLiteral, requiredParameterTypeName),
                                 },
-                                fix: (fixer) => fixer.replaceText(parameterTypeNameLiteral, `"${requiredParameterTypeName}"`),
+                            ],
+                            data: {
+                                name: parameterTypeName,
+                                suggestedName: requiredParameterTypeName,
                             },
-                        ],
-                        data: {
-                            name: node,
-                        },
-                    });
+                        });
+                    }
                 }
             },
         };

@@ -35,18 +35,6 @@ const rule = createRule<Options, MessageIds>({
     },
 
     create(context) {
-        // variables should be defined here
-
-        //----------------------------------------------------------------------
-        // Helpers
-        //----------------------------------------------------------------------
-
-        // any helper functions should go here or else delete this section
-
-        //----------------------------------------------------------------------
-        // Public
-        //----------------------------------------------------------------------
-
         return {
             ClassDeclaration(node: TSESTree.ClassDeclaration) {
                 //if (node.decorators)

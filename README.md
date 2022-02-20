@@ -1,6 +1,6 @@
-# eslint-plugin-typeorm
+# eslint-plugin-typegraphql
 
-Linting rules for Typeorm
+Linting rules for TypeGraphQL
 
 ## Installation
 
@@ -13,34 +13,31 @@ npm i eslint --save-dev
 Next, install `eslint-plugin-typeorm`:
 
 ```sh
-npm install eslint-plugin-typeorm --save-dev
+npm install eslint-plugin-typegraphql --save-dev
 ```
 
 ## Usage
 
-Add `typeorm` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
+Add `graphql` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
 
 ```json
 {
-    "plugins": [
-        "typeorm"
-    ]
+    "plugins": ["typegraphql"]
 }
 ```
-
 
 Then configure the rules you want to use under the rules section.
 
 ```json
 {
     "rules": {
-        "typeorm/rule-name": 2
+        "typegraphql/input-name": 1,
+        "typegraphql/input-type-name": 1,
+        "typegraphql/require-description": 1
     }
 }
 ```
 
 ## Supported Rules
 
-* Fill in provided rules here
-
-
+-   Fill in provided rules here
