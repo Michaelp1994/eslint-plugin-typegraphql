@@ -24,7 +24,7 @@ Add `graphql` to the plugins section of your `.eslintrc` configuration file. You
 
 ```json
 {
-    "plugins": ["typegraphql"]
+    "plugins": ["@michaelp1994/typegraphql"]
 }
 ```
 
@@ -33,10 +33,20 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "typegraphql/input-name": 1,
-        "typegraphql/input-type-name": 1,
-        "typegraphql/require-description": 1
+        "@michaelp1994/typegraphql/input-name": 1,
+        "@michaelp1994/typegraphql/input-type-name": 1,
+        "@michaelp1994/typegraphql/require-description": 1
     }
+}
+```
+
+## Config usage
+
+Alternatively, you can use the config as follows:
+
+```json
+{
+    "extends": ["plugin:@michaelp1994/typegraphql/recommended"]
 }
 ```
 
