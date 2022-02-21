@@ -1,6 +1,6 @@
 {
-    "name": "eslint-plugin-typegraphql",
-    "version": "0.1.0",
+    "name": "@michaelp1994/eslint-plugin-typegraphql",
+    "version": "0.1.4",
     "description": "Linting rules for Typegraphql",
     "files": [
         "dist/*"
@@ -11,7 +11,7 @@
         "eslint-plugin"
     ],
     "author": "Michael Poulgrain",
-    "main": "dist/lib/index.js",
+    "main": "dist/index.js",
     "scripts": {
         "clean": "rmdir /s /q dist",
         "lint": "eslint .",

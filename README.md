@@ -10,10 +10,10 @@ You'll first need to install [ESLint](https://eslint.org/):
 npm i eslint --save-dev
 ```
 
-Next, install `eslint-plugin-typeorm`:
+Next, install `@michaelp1994/eslint-plugin-typegraphql`:
 
 ```sh
-npm install eslint-plugin-typegraphql --save-dev
+npm install @michaelp1994/eslint-plugin-typegraphql --save-dev
 ```
 
 ## Usage

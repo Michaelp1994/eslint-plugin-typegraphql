@@ -9,12 +9,12 @@
 //------------------------------------------------------------------------------
 
 //import requireIndex from "requireindex";
-import rules from "./rules";
-// import configs from "./configs";
+import rules from "./lib/rules";
+import configs from "./configs";
 
 const configuration = {
     rules,
-    // configs,
+    configs,
 };
 //------------------------------------------------------------------------------
 // Plugin Definition
