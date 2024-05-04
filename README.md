@@ -52,4 +52,28 @@ Alternatively, you can use the config as follows:
 
 ## Supported Rules
 
--   Fill in provided rules here
+-   [x] require-description
+-   [ ] ~~description-style~~
+-   [ ] alphabetize
+-   [x] input-name
+-   [ ] no-scalar-result-type-on-mutation
+-   [ ] require-deprecation-date
+-   [ ] require-field-of-type-query-in-mutation-result
+-   [ ] known-argument-names
+-   [ ] known-directives
+-   [ ] known-type-names
+-   [ ] lone-schema-definition
+-   [ ] naming-convention
+-   [ ] no-case-insensitive-enum-values-duplicates
+-   [ ] no-hashtag-description
+-   [ ] no-typename-prefix
+-   [ ] no-unreachable-types
+-   [ ] provided-required-arguments
+-   [ ] require-deprecation-reason
+-   [ ] require-description
+-   [ ] strict-id-in-types
+-   [ ] unique-directive-names
+-   [ ] unique-directive-names-per-location
+-   [ ] unique-field-definition-names
+-   [ ] unique-operation-types
+-   [ ] unique-type-names

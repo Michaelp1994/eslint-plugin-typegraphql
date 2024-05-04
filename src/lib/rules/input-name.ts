@@ -5,6 +5,9 @@
 "use strict";
 import type { TSESTree } from "@typescript-eslint/utils";
 import { createRule } from "../utils/createRule";
+import { findArgDecorator } from "../utils/findArgDecorator";
+import { isMutation } from "../utils/isMutation";
+import { isQuery } from "../utils/isQuery";
 
 type InputNameRuleConfig = {
     checkQueries?: boolean;
@@ -64,24 +67,7 @@ const rule = createRule<[InputNameRuleConfig], MessageIds>({
             checkMutations: true,
             ...context.options[0],
         };
-        function isMutation(node: TSESTree.MethodDefinition) {
-            return node.decorators?.some(
-                (decorator) =>
-                    decorator.expression.type === "CallExpression" && decorator.expression.callee.type === "Identifier" && decorator.expression.callee.name === "Mutation"
-            );
-        }
 
-        function isQuery(node: TSESTree.MethodDefinition) {
-            return node.decorators?.some(
-                (decorator) => decorator.expression.type === "CallExpression" && decorator.expression.callee.type === "Identifier" && decorator.expression.callee.name === "Query"
-            );
-        }
-
-        function findArgDecorator(node: TSESTree.Parameter) {
-            return node.decorators?.find(
-                (decorator) => decorator.expression.type === "CallExpression" && decorator.expression.callee.type === "Identifier" && decorator.expression.callee.name === "Arg"
-            );
-        }
         return {
             MethodDefinition(node: TSESTree.MethodDefinition) {
                 if ((options.checkMutations && !isMutation(node)) || (options.checkQueries && !isQuery(node))) return null;

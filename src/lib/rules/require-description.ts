@@ -3,7 +3,6 @@
  * @author Michael Poulgrain
  */
 "use strict";
-import type { TSESTree } from "@typescript-eslint/utils";
 import { createRule } from "../utils/createRule";
 export type OptionString = "array" | "generic" | "array-simple";
 
@@ -36,7 +35,7 @@ const rule = createRule<Options, MessageIds>({
 
     create(context) {
         return {
-            ClassDeclaration(node: TSESTree.ClassDeclaration) {
+            ClassDeclaration(node) {
                 //if (node.decorators)
                 node.decorators?.forEach((decorator) => {
                     const expression = decorator.expression;
